@@ -1,0 +1,6 @@
+{
+  "name": "e-Asrama SMK Banggi",
+  "description": "Sistem Pengurusan Kehadiran & Laporan Bergambar Pembantu Penyelia Asrama SMK Banggi",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
