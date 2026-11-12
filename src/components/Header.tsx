@@ -167,15 +167,16 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenP
 
             {/* PPA Profile Selector when in PPA mode */}
             {userRole === 'PPA' && (
-              <div className="hidden xl:flex items-center gap-1.5 text-xs bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800">
-                <span className="font-medium truncate max-w-[130px]">{currentPpa.name}</span>
+              <div className="flex items-center gap-1 text-xs bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 px-2 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800 shrink-0">
+                <span className="font-semibold text-[11px] sm:text-xs truncate max-w-[90px] sm:max-w-[140px]">{currentPpa.name.split(' ')[0]}</span>
                 <select
                   value={currentPpa.id}
                   onChange={e => {
                     const found = ppas.find(p => p.id === e.target.value);
                     if (found) setCurrentPpa(found);
                   }}
-                  className="bg-transparent text-emerald-900 dark:text-emerald-200 font-semibold focus:outline-none cursor-pointer text-xs"
+                  className="bg-transparent text-emerald-900 dark:text-emerald-200 font-bold focus:outline-none cursor-pointer text-xs min-h-[36px]"
+                  aria-label="Pilih Profil PPA"
                 >
                   {ppas.map(p => (
                     <option key={p.id} value={p.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">

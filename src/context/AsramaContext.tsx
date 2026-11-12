@@ -67,21 +67,49 @@ export const AsramaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [ppas] = useState<PpaProfile[]>(INITIAL_PPAS);
   const [currentPpa, setCurrentPpa] = useState<PpaProfile>(INITIAL_PPAS[0]);
 
+  // Helper function for safe localStorage JSON parsing
+  const safeParseJSON = <T,>(key: string, fallback: T): T => {
+    try {
+      const saved = localStorage.getItem(key);
+      if (!saved || saved === 'undefined' || saved === 'null') return fallback;
+      const parsed = JSON.parse(saved);
+      return parsed && typeof parsed === 'object' ? parsed : fallback;
+    } catch (err) {
+      console.warn(`Failed to parse localStorage key ${key}:`, err);
+      return fallback;
+    }
+  };
+
+  const safeParseArray = <T,>(key: string, fallback: T[]): T[] => {
+    try {
+      const saved = localStorage.getItem(key);
+      if (!saved || saved === 'undefined' || saved === 'null') return fallback;
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : fallback;
+    } catch (err) {
+      console.warn(`Failed to parse localStorage key ${key}:`, err);
+      return fallback;
+    }
+  };
+
   // Auth Session State
   const [authSession, setAuthSession] = useState<AuthSession>(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY_AUTH);
-    return saved
-      ? JSON.parse(saved)
-      : { isAuthenticated: false, userRole: 'PK_HEM', name: 'Tetamu' };
+    const defaultAuth: AuthSession = { isAuthenticated: false, userRole: 'PK_HEM', name: 'Tetamu' };
+    const parsed = safeParseJSON<AuthSession>(LOCAL_STORAGE_KEY_AUTH, defaultAuth);
+    if (!parsed || typeof parsed.isAuthenticated !== 'boolean') {
+      return defaultAuth;
+    }
+    return parsed;
   });
 
-  const userRole = authSession.userRole;
+  const userRole = authSession?.userRole || 'PK_HEM';
 
   const setUserRole = (role: UserRoleMode) => {
     setAuthSession(prev => ({
       ...prev,
+      isAuthenticated: prev?.isAuthenticated ?? false,
       userRole: role,
-      name: role === 'PK_HEM' ? 'Penolong Kanan HEM' : currentPpa.name,
+      name: role === 'PK_HEM' ? 'Penolong Kanan HEM' : (currentPpa?.name || 'PPA'),
     }));
   };
 
@@ -127,18 +155,26 @@ export const AsramaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY_THEME);
-    return (saved === 'dark' || saved === 'light') ? saved : 'light';
+    try {
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY_THEME);
+      return (saved === 'dark' || saved === 'light') ? saved : 'light';
+    } catch {
+      return 'light';
+    }
   });
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
+    try {
+      const root = document.documentElement;
+      if (theme === 'dark') {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+      localStorage.setItem(LOCAL_STORAGE_KEY_THEME, theme);
+    } catch (e) {
+      console.warn('Unable to write theme to localStorage:', e);
     }
-    localStorage.setItem(LOCAL_STORAGE_KEY_THEME, theme);
   }, [theme]);
 
   const toggleTheme = () => {
@@ -146,28 +182,23 @@ export const AsramaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const [attendances, setAttendances] = useState<AttendanceRecord[]>(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY_ATTENDANCE);
-    return saved ? JSON.parse(saved) : INITIAL_ATTENDANCES;
+    return safeParseArray<AttendanceRecord>(LOCAL_STORAGE_KEY_ATTENDANCE, INITIAL_ATTENDANCES);
   });
 
   const [reports, setReports] = useState<PhotoReport[]>(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY_REPORTS);
-    return saved ? JSON.parse(saved) : INITIAL_REPORTS;
+    return safeParseArray<PhotoReport>(LOCAL_STORAGE_KEY_REPORTS, INITIAL_REPORTS);
   });
 
   const [rollCalls, setRollCalls] = useState<StudentRollCall[]>(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY_ROLLCALL);
-    return saved ? JSON.parse(saved) : INITIAL_ROLL_CALLS;
+    return safeParseArray<StudentRollCall>(LOCAL_STORAGE_KEY_ROLLCALL, INITIAL_ROLL_CALLS);
   });
 
   const [assets, setAssets] = useState<AsramaAsset[]>(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY_ASSETS);
-    return saved ? JSON.parse(saved) : INITIAL_ASSETS;
+    return safeParseArray<AsramaAsset>(LOCAL_STORAGE_KEY_ASSETS, INITIAL_ASSETS);
   });
 
   const [damageReports, setDamageReports] = useState<AssetDamageReport[]>(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY_DAMAGE);
-    return saved ? JSON.parse(saved) : INITIAL_ASSET_DAMAGE_REPORTS;
+    return safeParseArray<AssetDamageReport>(LOCAL_STORAGE_KEY_DAMAGE, INITIAL_ASSET_DAMAGE_REPORTS);
   });
 
   const [executiveSummary, setExecutiveSummary] = useState<ExecutiveSummaryAI | undefined>();

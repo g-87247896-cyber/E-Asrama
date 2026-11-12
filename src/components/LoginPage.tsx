@@ -126,7 +126,7 @@ export const LoginPage: React.FC = () => {
                 <select
                   value={selectedPpaId}
                   onChange={e => setSelectedPpaId(e.target.value)}
-                  className="w-full px-3.5 py-3 text-xs bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                  className="w-full px-3.5 py-3 text-base sm:text-xs bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium min-h-[48px]"
                 >
                   {ppas.map(p => (
                     <option key={p.id} value={p.id} className="bg-slate-900 text-white">
@@ -143,21 +143,22 @@ export const LoginPage: React.FC = () => {
                 Kata Laluan Akses Rasmi
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+                <Lock className="w-5 h-5 text-slate-500 absolute left-3.5 top-3.5" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
                   placeholder="Masukkan kata laluan..."
-                  className="w-full pl-10 pr-10 py-3 text-xs bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono tracking-wider"
+                  className="w-full pl-11 pr-11 py-3 text-base sm:text-sm bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono tracking-wider min-h-[48px]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-3.5 text-slate-500 hover:text-slate-200"
+                  className="absolute right-2 top-0.5 text-slate-500 hover:text-slate-200 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  aria-label="Tunjukkan Kata Laluan"
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -165,7 +166,7 @@ export const LoginPage: React.FC = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 active:scale-98 mt-2"
+              className="w-full min-h-[48px] py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 active:scale-98 mt-2"
             >
               <span>Akses Portal e-Asrama</span>
               <ArrowRight className="w-4 h-4" />
