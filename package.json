@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build && tsx --build server.ts || tsc server.ts --outDir . --moduleResolution bundler || echo 'Vite build done'",
+    "build": "vite build && mkdir -p docs && cp -r dist/* docs/ && cp dist/index.html docs/404.html && touch docs/.nojekyll dist/.nojekyll",
     "start": "tsx server.ts",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
